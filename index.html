@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="board">
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+            <div class="cell" data-cell></div>
+        </div>
+        <button id="reset">Reset</button>
+        <div class="message" id="message"></div>
+    </div>
+</body>
+   <style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 2px solid #333;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.cell:hover {
+    background-color: #e0e0e0;
+}
+
+button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.message {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+   </style>
+   <script>
+    const cells = document.querySelectorAll('[data-cell]');
+const board = document.querySelector('.board');
+const resetButton = document.getElementById('reset');
+const message = document.getElementById('message');
+
+let currentPlayer = 'X'; // 'X' starts the game
+let gameActive = true;
+
+const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+
+function handleClick(event) {
+    const cell = event.target;
+    const cellIndex = Array.from(cells).indexOf(cell);
+
+    if (cell.textContent || !gameActive) return;
+
+    cell.textContent = currentPlayer;
+    if (checkWin()) {
+        message.textContent = `${currentPlayer} wins!`;
+        gameActive = false;
+    } else if (Array.from(cells).every(cell => cell.textContent)) {
+        message.textContent = 'It\'s a draw!';
+        gameActive = false;
+    } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+}
+
+function checkWin() {
+    return winningCombinations.some(combination => {
+        const [a, b, c] = combination;
+        return cells[a].textContent &&
+               cells[a].textContent === cells[b].textContent &&
+               cells[a].textContent === cells[c].textContent;
+    });
+}
+
+function resetGame() {
+    cells.forEach(cell => cell.textContent = '');
+    message.textContent = '';
+    currentPlayer = 'X';
+    gameActive = true;
+}
+
+cells.forEach(cell => cell.addEventListener('click', handleClick));
+resetButton.addEventListener('click', resetGame);
+
+   </script>
+</html>
